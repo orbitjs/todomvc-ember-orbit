@@ -1,1 +1,1 @@
-# todomvc-orbit-logux
+# todomvc-ember-orbit

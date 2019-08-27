@@ -1,0 +1,35 @@
+{
+  "name": "orbit-server-template",
+  "version": "0.5.0",
+  "author": "Paul Chavard",
+  "license": "MIT",
+  "dependencies": {
+    "@orbit-server/fastify": "^0.8.0",
+    "fastify": "^2.7.1",
+    "fastify-cli": "^1.2.0",
+    "fastify-plugin": "^1.6.0",
+    "inflected": "^2.0.4",
+    "orbit-sql": "^0.1.2",
+    "sqlite3": "^4.1.0"
+  },
+  "scripts": {
+    "routes": "yarn fastify print-routes ./dist/src/app.js",
+    "postinstall": "tsc",
+    "start": "tsc-watch --onSuccess \"yarn start:dev\"",
+    "test": "qunit --require ts-node/register 'test/**/*-test.ts'",
+    "start:dev": "fastify start -l info -P dist/src/app.js",
+    "start:heroku": "fastify start -a '0.0.0.0' -l info dist/src/app.js"
+  },
+  "engines": {
+    "node": ">= 10.*"
+  },
+  "devDependencies": {
+    "@types/inflected": "^1.1.29",
+    "@types/node": "^12.7.2",
+    "@types/qunit": "^2.9.0",
+    "qunit": "^2.9.2",
+    "ts-node": "^8.3.0",
+    "tsc-watch": "^2.4.0",
+    "typescript": "^3.5.3"
+  }
+}

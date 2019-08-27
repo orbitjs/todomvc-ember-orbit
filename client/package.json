@@ -1,8 +1,8 @@
 {
-  "name": "orbit-client",
+  "name": "todomvc-ember-orbit-client",
   "version": "0.0.0",
   "private": true,
-  "description": "Small description for orbit-client goes here",
+  "description": "Example",
   "repository": "",
   "license": "MIT",
   "author": "",
@@ -20,8 +20,7 @@
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",
     "@glimmer/component": "^0.14.0-alpha.12",
-    "@logux/client": "^0.3.4",
-    "@logux/core": "^0.3.1",
+    "@orbit/jsonapi": "^0.16.1",
     "babel-eslint": "^10.0.2",
     "broccoli-asset-rev": "^3.0.0",
     "ember-auto-import": "^1.5.2",

@@ -1,0 +1,10 @@
+{
+  "models": {
+    "todo": {
+      "attributes": {
+        "title": { "type": "string" },
+        "completed": { "type": "boolean" }
+      }
+    }
+  }
+}
