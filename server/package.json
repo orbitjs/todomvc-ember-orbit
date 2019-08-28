@@ -1,10 +1,10 @@
 {
-  "name": "orbit-server-template",
+  "name": "todomvc-ember-orbit-server",
   "version": "0.5.0",
   "author": "Paul Chavard",
   "license": "MIT",
   "dependencies": {
-    "@orbit-server/fastify": "^0.8.0",
+    "@orbit-server/fastify": "^0.8.1",
     "fastify": "^2.7.1",
     "fastify-cli": "^1.2.0",
     "fastify-plugin": "^1.6.0",
@@ -30,6 +30,6 @@
     "qunit": "^2.9.2",
     "ts-node": "^8.3.0",
     "tsc-watch": "^2.4.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.6.2"
   }
 }
