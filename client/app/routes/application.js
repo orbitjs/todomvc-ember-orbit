@@ -7,6 +7,8 @@ export default class extends Route {
   @service dataCoordinator;
 
   async beforeModel() {
+    console.log("Sources:", this.dataCoordinator.sourceNames);
+
     // If a backup source is present, populate the store from backup prior to
     // activating the coordinator
     const backup = this.dataCoordinator.getSource("backup");
