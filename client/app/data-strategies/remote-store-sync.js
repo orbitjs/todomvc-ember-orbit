@@ -1,14 +1,14 @@
-import { SyncStrategy } from '@orbit/coordinator';
+import { SyncStrategy } from "@orbit/coordinator";
 
 export default {
   create() {
     return new SyncStrategy({
-      name: 'remote-store-sync',
+      name: "remote-store-sync",
 
       /**
        * The name of the source which will have its `transform` event observed.
        */
-      source: 'remote',
+      source: "remote",
 
       /**
        * The name of the source which will be acted upon.
@@ -16,7 +16,7 @@ export default {
        * When the source receives the `transform` event, the `sync` method
        * will be invoked on the target.
        */
-      target: 'store',
+      target: "store",
 
       /**
        * A handler for any errors thrown as a result of invoking `sync` on the
@@ -44,4 +44,3 @@ export default {
     });
   }
 };
-

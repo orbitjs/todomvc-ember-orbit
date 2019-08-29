@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",
+    "@ember/render-modifiers": "^1.0.1",
     "@glimmer/component": "^0.14.0-alpha.12",
     "@orbit/jsonapi": "^0.16.1",
     "babel-eslint": "^10.0.2",
