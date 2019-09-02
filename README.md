@@ -91,7 +91,7 @@ the coordinator:
 
 ## Scenario 3: Memory + Remote
 
-An alternative to using brower storage is to fetch and persist data to a backend
+An alternative to using browser storage is to fetch and persist data to a backend
 server. Let's add an `@orbit/jsonapi` source that will communicate with our
 demo server.
 
