@@ -1,10 +1,19 @@
+import { Config } from "knex";
 import { pluralize, singularize } from "inflected";
 import { Schema, ModelDefinition } from "@orbit/data";
-import Server from "@orbit-server/fastify";
+import { FastifyInstance } from "fastify";
+import OrbitServer from "@orbit-server/fastify";
 import SQLSource from "orbit-sql";
 import plugin from "fastify-plugin";
 
 import schemaJson from "./schema.json";
+import * as config from "./knexfile";
+
+function loadConfig(fastify: FastifyInstance) {
+  const env = process.env.NODE_ENV || "development";
+  fastify.log.info(`Starting in "${env}" environment`);
+  return (config as Record<string, Config>)[env];
+}
 
 export default plugin(function(fastify, _, next) {
   const schema = new Schema({
@@ -15,15 +24,10 @@ export default plugin(function(fastify, _, next) {
 
   const source = new SQLSource({
     schema,
-    knex: {
-      client: "sqlite3",
-      // connection: { filename: ':memory:' },
-      connection: { filename: "./todomvc-ember-orbit.db" },
-      useNullAsDefault: true
-    }
+    knex: loadConfig(fastify)
   });
 
-  const server = new Server({
+  const server = new OrbitServer({
     source,
     jsonapi: true,
     graphql: true
