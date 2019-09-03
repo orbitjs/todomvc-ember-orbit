@@ -120,6 +120,48 @@ then requests will succeed locally regardless of whether they succeed remotely.
 However, this approach is not recommended unless it's paired with a local
 backup.
 
+### Pessimistic Error Handling
+
+It's important that errors are handled appropriately in Orbit. Once an error
+occurs processing a request, that source's `requestQueue` will be paused,
+waiting for you to handle the issue and then restart processing the queue.
+
+In a pessimistic scenario, you can be assured that a failure on the `remote`
+source will also block the `requestQueue` for the `store`.
+
+A simplistic strategy for handling failures would be to log the errors,
+skip the current task in the queues, and then re-throw the error so that it
+could be handled at the call site. Let's do this by editing
+`app/data-strategies/store-beforeupdate-remote-update.js` to include a `catch`
+handler:
+
+```javascript
+      catch(e, transform) {
+        console.log("Error performing remote.update()", transform, e);
+        this.source.requestQueue.skip(e);
+        this.target.requestQueue.skip(e);
+        throw e;
+      },
+```
+
+Note that you might want to inspect the error and perform some custom error
+handling, perhaps even choosing to not rethrow the error (e.g. if a record
+is being deleted and the server returns a 404).
+
+You may also choose to add some custom error handling at the call site in the
+component layer:
+
+```javascript
+  @action async removeTodo() {
+    try {
+      await this.args.todo.remove();
+    } catch (e) {
+      // Custom error handling here
+      alert("An unexpected error occurred.");
+    }
+  }
+```
+
 ## Scenario 4: Memory + Backup + Remote
 
 A more robust approach to providing an optimistic UI is to use a backup source
