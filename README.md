@@ -120,12 +120,56 @@ then requests will succeed locally regardless of whether they succeed remotely.
 However, this approach is not recommended unless it's paired with a local
 backup.
 
+### Pessimistic Error Handling
+
+It's important that errors are handled appropriately in Orbit. Once an error
+occurs processing a request, that source's `requestQueue` will be paused,
+waiting for you to handle the issue and then restart processing the queue.
+
+In a pessimistic scenario, you can be assured that a failure on the `remote`
+source will also block the `requestQueue` for the `store`.
+
+A simplistic strategy for handling failures would be to log the errors,
+skip the current task in the queues, and then re-throw the error so that it
+could be handled at the call site. Let's do this by editing
+`app/data-strategies/store-beforeupdate-remote-update.js` to include a `catch`
+handler:
+
+```javascript
+      catch(e, transform) {
+        console.log("Error performing remote.update()", transform, e);
+        this.source.requestQueue.skip(e);
+        this.target.requestQueue.skip(e);
+        throw e;
+      },
+```
+
+Note that you might want to inspect the error and perform some custom error
+handling, perhaps even choosing to not rethrow the error (e.g. if a record
+is being deleted and the server returns a 404).
+
+You may also choose to add some custom error handling at the call site in the
+component layer:
+
+```javascript
+  @action async removeTodo() {
+    try {
+      await this.args.todo.remove();
+    } catch (e) {
+      // Custom error handling here
+      alert("An unexpected error occurred.");
+    }
+  }
+```
+
+Remember to also provide error handling for queries as well as updates.
+
 ## Scenario 4: Memory + Backup + Remote
 
-A more robust approach to providing an optimistic UI is to use a backup source
-to capture local data AND a data bucket to capture all in-flight state for
-sources. This combination should prevent data loss, even when your app is closed
-accidentally.
+In order to provide a robust optimistic UI it's recommended that you use a
+backup source to capture local data AND a data bucket to capture all in-flight
+state for sources. This combination should prevent data loss, even when your app
+is closed accidentally.
 
 To configure this scenario, run the following from the `./client` directory:
 
@@ -147,10 +191,132 @@ Next, change the request strategies to be optimistic by changing
 - `app/data-strategies/store-beforequery-remote-query.js`
 - `app/data-strategies/store-beforeupdate-remote-update.js`
 
-## Error Handling
+### Optimistic Error Handling
 
-TODO: Add some error handling strategies once the server has been fixed to
-respond with appropriate errors.
+Error handling is, by necessity, a bit different for optimistic strategies than
+for pessimistic strategies. Optimistic strategies won't block the successful
+completion of an action based upon what happens downstream. For instance, a
+record might be added or removed from the `store` without knowing whether the
+subsequent request to the `remote` source will be successful.
+
+In order to handle these scenarios well, you need to consider the different
+types of errors that may occur and make a plan for each. For instance, you
+should consider whether you want to handle queries differently from updates.
+Orbit gives you pretty complete control, so let's talk through a few scenarios.
+
+Let's say that, in the event of a network outage, you want to do the following:
+
+- Drop any remote _query_ requests that have hung. Instead, you'll just rely on
+  client-side data until you're back online.
+
+- Queue any _update_ requests that can't be processed immediately and then
+  periodically retry them.
+
+These scenarios _could_ be handled via `catch` handlers in:
+
+- `app/data-strategies/store-beforequery-remote-query.js`
+- `app/data-strategies/store-beforeupdate-remote-update.js`
+
+For instance, query requests could be dropped with:
+
+```javascript
+      catch() {
+        // skip the current query request in the remote queue
+        this.target.requestQueue.skip();
+      },
+```
+
+This will only apply to query requests initiated by this particular strategy
+(which may be just fine for this app).
+
+If you prefer to instead provide an error-handling strategy that will apply to
+remote queries that fail _regardless of where the request originated_, create a
+specific strategy that observes the `queryFail` event on the `remote` source:
+
+```bash
+ember g data-strategy remote-queryfail
+```
+
+Then edit `app/data-strategies/remote-queryfail.js`:
+
+```javascript
+import { RequestStrategy } from "@orbit/coordinator";
+
+export default {
+  create() {
+    return new RequestStrategy({
+      name: "remote-queryfail",
+      source: "remote",
+      on: "queryFail",
+      action() {
+        this.source.requestQueue.skip();
+      }
+    });
+  }
+};
+```
+
+Now let's implement a more advanced update failure handling strategy:
+
+```bash
+ember g data-strategy remote-updatefail
+```
+
+Then edit `app/data-strategies/remote-updatefail.js`:
+
+```javascript
+import { RequestStrategy } from "@orbit/coordinator";
+import { NetworkError } from "@orbit/data";
+
+export default {
+  create() {
+    return new RequestStrategy({
+      name: "remote-updatefail",
+      source: "remote",
+      on: "updateFail",
+
+      action(transform, e) {
+        const remote = this.source;
+        const store = this.coordinator.getSource("store");
+
+        if (e instanceof NetworkError) {
+          // When network errors are encountered, try again in 3s
+          console.log("NetworkError - will try again soon");
+          setTimeout(() => {
+            remote.requestQueue.retry();
+          }, 3000);
+        } else {
+          // When non-network errors occur, notify the user and
+          // reset state.
+          let label = transform.options && transform.options.label;
+          if (label) {
+            alert(`Unable to complete "${label}"`);
+          } else {
+            alert(`Unable to complete operation`);
+          }
+
+          // Roll back store to position before transform
+          if (store.transformLog.contains(transform.id)) {
+            console.log("Rolling back - transform:", transform.id);
+            store.rollback(transform.id, -1);
+          }
+
+          return remote.requestQueue.skip();
+        }
+      }
+    });
+  }
+};
+```
+
+As described in the comments, this strategy treats network errors differently
+from non-network errors. Network errors during updates will simply retry the
+current request every few seconds. However, if another type of error occurs,
+such as a 4xx or 5xx error, then the user will be notified, the store will be
+rolled back to a position before the transform, and the transform will be
+skipped in the queue. This is a rather brute force approach to dealing with
+errors. Even better would be to analyze the error (`e`) and attempt to figure
+out what went wrong and whether it could be corrected.
 
 ## License
 
