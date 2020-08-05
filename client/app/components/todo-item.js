@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { set, action } from "@ember/object";
+import { action } from "@ember/object";
 import { isBlank } from "@ember/utils";
 
 export default class extends Component {
@@ -11,15 +11,15 @@ export default class extends Component {
     this.editing = true;
   }
 
-  @action doneEditing(e) {
+  @action async doneEditing(e) {
     const title = e.target.value.trim();
     if (!this.editing) {
       return;
     }
     if (isBlank(title)) {
-      this.args.todo.remove();
+      await this.args.todo.remove();
     } else {
-      set(this.args.todo, "title", title);
+      await this.args.todo.replaceAttribute("title", title);
       this.editing = false;
       this.args.onEndEdit();
     }
@@ -33,8 +33,8 @@ export default class extends Component {
     }
   }
 
-  @action toggleCompleted(e) {
-    set(this.args.todo, "completed", e.target.checked);
+  @action async toggleCompleted(e) {
+    await this.args.todo.replaceAttribute('completed', e.target.checked);
   }
 
   @action removeTodo() {
