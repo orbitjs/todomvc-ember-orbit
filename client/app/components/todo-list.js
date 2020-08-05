@@ -1,15 +1,15 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { set, action } from "@ember/object";
+import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isBlank } from "@ember/utils";
 
 export default class extends Component {
   @service store;
-  @tracked canToggle;
+  @tracked canToggle = true;
 
   get allCompleted() {
-    return this.allTodos.isEvery("completed");
+    return this.remainingTodos.length === 0;
   }
 
   @action enableToggle() {
@@ -20,18 +20,23 @@ export default class extends Component {
     this.canToggle = false;
   }
 
-  @action toggleAll() {
-    for (let todo of this.args.todos) {
-      set(todo, "completed", !this.allCompleted);
-    }
+  @action async toggleAll() {
+    const completed = !this.allCompleted;
+    const todos = completed ? this.remainingTodos : this.completedTodos;
+
+    await this.store.update((t) =>
+      todos.value.map((todo) => {
+        return t.replaceAttribute(todo.identity, "completed", completed);
+      })
+    );
   }
 
-  @action createTodo(e) {
+  @action async createTodo(e) {
     if (e.keyCode === 13 && !isBlank(e.target.value)) {
-      this.store.addRecord({
+      await this.store.addRecord({
         type: "todo",
         title: e.target.value.trim(),
-        completed: false
+        completed: false,
       });
       e.target.value = "";
     }
@@ -59,11 +64,13 @@ export default class extends Component {
   }
 
   get allTodos() {
-    return this.store.cache.liveQuery(q => q.findRecords("todo").sort("title"));
+    return this.store.cache.liveQuery((q) =>
+      q.findRecords("todo").sort("title")
+    );
   }
 
   get remainingTodos() {
-    return this.store.cache.liveQuery(q =>
+    return this.store.cache.liveQuery((q) =>
       q
         .findRecords("todo")
         .filter({ attribute: "completed", value: false })
@@ -72,7 +79,7 @@ export default class extends Component {
   }
 
   get completedTodos() {
-    return this.store.cache.liveQuery(q =>
+    return this.store.cache.liveQuery((q) =>
       q
         .findRecords("todo")
         .filter({ attribute: "completed", value: true })
