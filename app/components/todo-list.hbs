@@ -19,7 +19,7 @@
 {{#if (gt this.allTodos.length 0)}}
   <footer class="footer">
     <span class="todo-count"><strong>{{this.remainingTodos.length}}</strong>
-      {{pluralize "item" this.remainingTodos.length}}
+      {{if (eq this.remainingTodos.length 1) "item" "items"}}
       left</span>
     <ul class="filters">
       <li>

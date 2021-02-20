@@ -1,8 +1,8 @@
-import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
-import { action } from "@ember/object";
-import { inject as service } from "@ember/service";
-import { isBlank } from "@ember/utils";
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { isBlank } from '@ember/utils';
 
 export default class extends Component {
   @service store;
@@ -26,7 +26,7 @@ export default class extends Component {
 
     await this.store.update((t) =>
       todos.value.map((todo) => {
-        return t.replaceAttribute(todo.identity, "completed", completed);
+        return t.replaceAttribute(todo.identity, 'completed', completed);
       })
     );
   }
@@ -34,11 +34,11 @@ export default class extends Component {
   @action async createTodo(e) {
     if (e.keyCode === 13 && !isBlank(e.target.value)) {
       await this.store.addRecord({
-        type: "todo",
+        type: 'todo',
         title: e.target.value.trim(),
         completed: false,
       });
-      e.target.value = "";
+      e.target.value = '';
     }
   }
 
@@ -54,9 +54,9 @@ export default class extends Component {
 
   get todos() {
     switch (this.args.filter) {
-      case "active":
+      case 'active':
         return this.remainingTodos;
-      case "completed":
+      case 'completed':
         return this.completedTodos;
       default:
         return this.allTodos;
@@ -65,25 +65,25 @@ export default class extends Component {
 
   get allTodos() {
     return this.store.cache.liveQuery((q) =>
-      q.findRecords("todo").sort("title")
+      q.findRecords('todo').sort('title')
     );
   }
 
   get remainingTodos() {
     return this.store.cache.liveQuery((q) =>
       q
-        .findRecords("todo")
-        .filter({ attribute: "completed", value: false })
-        .sort("title")
+        .findRecords('todo')
+        .filter({ attribute: 'completed', value: false })
+        .sort('title')
     );
   }
 
   get completedTodos() {
     return this.store.cache.liveQuery((q) =>
       q
-        .findRecords("todo")
-        .filter({ attribute: "completed", value: true })
-        .sort("title")
+        .findRecords('todo')
+        .filter({ attribute: 'completed', value: true })
+        .sort('title')
     );
   }
 }

@@ -1,7 +1,7 @@
-import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
-import { action } from "@ember/object";
-import { isBlank } from "@ember/utils";
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import { isBlank } from '@ember/utils';
 
 export default class extends Component {
   @tracked editing = false;
@@ -19,7 +19,7 @@ export default class extends Component {
     if (isBlank(title)) {
       await this.args.todo.remove();
     } else {
-      await this.args.todo.replaceAttribute("title", title);
+      await this.args.todo.replaceAttribute('title', title);
       this.editing = false;
       this.args.onEndEdit();
     }
