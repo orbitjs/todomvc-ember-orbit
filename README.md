@@ -27,7 +27,6 @@ instructions for
 To run the client app:
 
 ```
-cd ./client
 yarn start
 ```
 
@@ -46,9 +45,8 @@ refresh.
 In order to persist data, one option is to connect your store to browser-based
 storage such as IndexedDB.
 
-To configure this scenario, run the following from the `./client` directory
-(_note: the first reset step is only necessary if you've made local changes to
-the repo_):
+To configure this scenario, run the following (_note: the first reset step is
+only necessary if you've made local changes to the repo_):
 
 ```bash
 git reset --hard && git clean -f -d && yarn install
@@ -93,7 +91,7 @@ An alternative to using browser storage is to fetch and persist data to a backen
 server. Let's add an `@orbit/jsonapi` source that will communicate with our
 demo server.
 
-To configure this scenario, run the following from the `./client` directory:
+To configure this scenario, run the following:
 
 ```bash
 git reset --hard && git clean -f -d && yarn install
@@ -169,7 +167,7 @@ backup source to capture local data AND a data bucket to capture all in-flight
 state for sources. This combination should prevent data loss, even when your app
 is closed accidentally.
 
-To configure this scenario, run the following from the `./client` directory:
+To configure this scenario, run the following:
 
 ```bash
 git reset --hard && git clean -f -d && yarn install
