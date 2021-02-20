@@ -4,14 +4,15 @@ This is a [TodoMVC](https://github.com/tastejs/todomvc) app that uses
 [Ember.js](https://github.com/emberjs/ember.js) (Octane edition) and
 [ember-orbit](https://github.com/orbitjs/ember-orbit) on the client-side.
 
-This repo also contains a server implementation that uses
+The client app is compatible with
+[todomvc-orbit-server](https://github.com/orbitjs/todomvc-orbit-server), a
+simple server implementation that uses
 [orbit-server](https://github.com/tchak/orbit-server) to provide
 [JSON:API](https://jsonapi.org) endpoints for some of the scenarios below.
 
 ## Installation
 
-This repo uses a yarn workspace to manage dependencies. All dependencies can be
-installed via:
+To install dependencies:
 
 ```
 yarn install
@@ -19,17 +20,14 @@ yarn install
 
 ## Running
 
+To run the server app (which is optional for many scenarios below), follow the
+instructions for
+[todomvc-orbit-server](https://github.com/orbitjs/todomvc-orbit-server).
+
 To run the client app:
 
 ```
 cd ./client
-yarn start
-```
-
-To run the server app (optional for many scenarios below):
-
-```
-cd ./server
 yarn start
 ```
 
