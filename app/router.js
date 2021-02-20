@@ -1,5 +1,5 @@
 import EmberRouter from '@ember/routing/router';
-import config from 'todomvc-ember-orbit-client/config/environment';
+import config from 'todomvc-ember-orbit/config/environment';
 
 export default class Router extends EmberRouter {
   location = config.locationType;
