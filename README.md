@@ -32,7 +32,19 @@ yarn start
 
 The demo can then be accessed at: http://localhost:4200
 
-## Scenario 1: Memory-only
+## Scenarios
+
+The following scenarios illustrate different configurations of sources and
+coordination strategies that can be used to build different kinds of
+applications with `ember-orbit`.
+
+> **Important**: If you are running a pre-release version (i.e. alpha or beta) of
+`ember-orbit`, then you'll want to ensure that corresponding pre-release
+versions of Orbit dependencies are referenced in your `package.json` after
+running the ember generators described below. By default, running the generators
+will install the latest stable releases, which may be incompatible.
+
+### Scenario 1: Memory-only
 
 The default application just relies on the in-memory `store` service that's
 installed by default by `ember-orbit`.
@@ -40,7 +52,7 @@ installed by default by `ember-orbit`.
 Since data is only kept in memory, you'll be starting over with each page
 refresh.
 
-## Scenario 2: Memory + Backup
+### Scenario 2: Memory + Backup
 
 In order to persist data, one option is to connect your store to browser-based
 storage such as IndexedDB.
@@ -85,7 +97,7 @@ the coordinator:
   }
 ```
 
-## Scenario 3: Memory + Remote
+### Scenario 3: Memory + Remote
 
 An alternative to using browser storage is to fetch and persist data to a backend
 server. Let's add an `@orbit/jsonapi` source that will communicate with our
@@ -116,7 +128,7 @@ then requests will succeed locally regardless of whether they succeed remotely.
 However, this approach is not recommended unless it's paired with a local
 backup.
 
-### Pessimistic Error Handling
+#### Pessimistic Error Handling
 
 It's important that errors are handled appropriately in Orbit. Once an error
 occurs processing a request, that source's `requestQueue` will be paused,
@@ -160,7 +172,7 @@ component layer:
 
 Remember to also provide error handling for queries as well as updates.
 
-## Scenario 4: Memory + Backup + Remote
+### Scenario 4: Memory + Backup + Remote
 
 In order to provide a robust optimistic UI it's recommended that you use a
 backup source to capture local data AND a data bucket to capture all in-flight
@@ -187,7 +199,7 @@ Next, change the request strategies to be optimistic by changing
 - `app/data-strategies/store-beforequery-remote-query.js`
 - `app/data-strategies/store-beforeupdate-remote-update.js`
 
-### Optimistic Error Handling
+#### Optimistic Error Handling
 
 Error handling is, by necessity, a bit different for optimistic strategies than
 for pessimistic strategies. Optimistic strategies won't block the successful
