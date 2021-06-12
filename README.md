@@ -82,18 +82,18 @@ the coordinator:
   // app/routes/application.js
 
   async beforeModel() {
-    console.log("Sources:", this.dataCoordinator.sourceNames);
+    console.log('Sources:', this.dataCoordinator.sourceNames);
 
     // If a backup source is present, populate the store from backup prior to
     // activating the coordinator
-    const backup = this.dataCoordinator.getSource("backup");
+    const backup = this.dataCoordinator.getSource('backup');
     if (backup) {
-      const transform = await backup.pull(q => q.findRecords());
-      await this.store.sync(transform);
+      const records = await backup.query((q) => q.findRecords());
+      await this.store.sync((t) => records.map((r) => t.addRecord(r)));
     }
 
     await this.dataCoordinator.activate();
-    await this.store.query(q => q.findRecords("todo"));
+    await this.store.query((q) => q.findRecords('todo'));
   }
 ```
 
