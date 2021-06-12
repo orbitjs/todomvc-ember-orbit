@@ -12,8 +12,8 @@ export default class extends Route {
     // activating the coordinator
     const backup = this.dataCoordinator.getSource('backup');
     if (backup) {
-      const transform = await backup.pull((q) => q.findRecords());
-      await this.store.sync(transform);
+      const records = await backup.query((q) => q.findRecords());
+      await this.store.sync((t) => records.map((r) => t.addRecord(r)));
     }
 
     await this.dataCoordinator.activate();
