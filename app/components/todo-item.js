@@ -17,9 +17,9 @@ export default class extends Component {
       return;
     }
     if (isBlank(title)) {
-      await this.args.todo.remove();
+      await this.args.todo.$remove();
     } else {
-      await this.args.todo.replaceAttribute('title', title);
+      await this.args.todo.$replaceAttribute('title', title);
       this.editing = false;
       this.args.onEndEdit();
     }
@@ -34,11 +34,11 @@ export default class extends Component {
   }
 
   @action async toggleCompleted(e) {
-    await this.args.todo.replaceAttribute('completed', e.target.checked);
+    await this.args.todo.$replaceAttribute('completed', e.target.checked);
   }
 
   @action removeTodo() {
-    this.args.todo.remove();
+    this.args.todo.$remove();
   }
 
   @action setEditFocus(element) {

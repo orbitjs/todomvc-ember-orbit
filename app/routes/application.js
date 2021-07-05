@@ -17,6 +17,6 @@ export default class extends Route {
     }
 
     await this.dataCoordinator.activate();
-    await this.store.query((q) => q.findRecords('todo'));
+    await this.store.findRecords('todo');
   }
 }

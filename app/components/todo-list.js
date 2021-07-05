@@ -26,7 +26,7 @@ export default class extends Component {
 
     await this.store.update((t) =>
       todos.value.map((todo) => {
-        return t.replaceAttribute(todo.identity, 'completed', completed);
+        return t.replaceAttribute(todo, 'completed', completed);
       })
     );
   }
