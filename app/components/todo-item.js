@@ -2,8 +2,10 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { isBlank } from '@ember/utils';
+import { inject as service } from '@ember/service';
 
 export default class extends Component {
+  @service store;
   @tracked editing = false;
 
   @action startEditing() {
@@ -17,9 +19,11 @@ export default class extends Component {
       return;
     }
     if (isBlank(title)) {
-      await this.args.todo.$remove();
+      await this.store.removeRecord(this.args.todo);
     } else {
-      await this.args.todo.$replaceAttribute('title', title);
+      await this.store.update((t) =>
+        t.replaceAttribute(this.args.todo, 'title', title)
+      );
       this.editing = false;
       this.args.onEndEdit();
     }
@@ -34,11 +38,13 @@ export default class extends Component {
   }
 
   @action async toggleCompleted(e) {
-    await this.args.todo.$replaceAttribute('completed', e.target.checked);
+    await this.store.update((t) =>
+      t.replaceAttribute(this.args.todo, 'completed', e.target.checked)
+    );
   }
 
-  @action removeTodo() {
-    this.args.todo.$remove();
+  @action async removeTodo() {
+    await this.store.removeRecord(this.args.todo);
   }
 
   @action setEditFocus(element) {

@@ -42,10 +42,12 @@ export default class extends Component {
     }
   }
 
-  @action clearCompleted() {
-    for (let todo of this.completedTodos) {
-      todo.remove();
-    }
+  @action async clearCompleted() {
+    await this.store.update((t) =>
+      this.completedTodos.value.map((todo) => {
+        return t.removeRecord(todo);
+      })
+    );
   }
 
   @action setInitialFocus(element) {
