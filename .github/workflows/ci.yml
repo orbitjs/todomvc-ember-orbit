@@ -22,11 +22,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12.x
-          cache: npm
+          cache: yarn
       - name: Install Dependencies
-        run: npm ci
+        run: yarn install
       - name: Lint
-        run: npm run lint
+        run: yarn lint
 
   test:
     name: "Test"
@@ -38,8 +38,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12.x
-          cache: npm
+          cache: yarn
       - name: Install Dependencies
-        run: npm ci
+        run: yarn install
       - name: Run Tests
-        run: npm test
+        run: yarn test
