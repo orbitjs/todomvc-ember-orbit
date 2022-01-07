@@ -1,12 +1,12 @@
 <header class="header">
-  <input class="new-todo" placeholder="What needs to be done?" {{did-insert this.setInitialFocus}}
+  <input class="new-todo" placeholder="What needs to be done?" {{autofocus}}
     {{on "keydown" this.createTodo}}>
 </header>
 <section class="main">
   {{#if this.todos.length}}
     {{#if this.canToggle}}
-      <input id="toggle-all" class="toggle-all" type="checkbox" checked={{this.allCompleted}}
-        {{on "change" this.toggleAll}}>
+      <input id="toggle-all" class="toggle-all" type="checkbox" checked={{this.allCompleted}} {{on "change"
+        this.toggleAll}}>
       <label for="toggle-all">Mark all as complete</label>
     {{/if}}
     <ul class="todo-list">
@@ -33,7 +33,7 @@
       </li>
     </ul>
     {{#if this.completedTodos.length}}
-      <button class="clear-completed" {{on "click" this.clearCompleted}}>Clear completed</button>
+      <button class="clear-completed" type="button" {{on "click" this.clearCompleted}}>Clear completed</button>
     {{/if}}
   </footer>
 {{/if}}
