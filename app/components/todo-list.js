@@ -50,10 +50,6 @@ export default class extends Component {
     );
   }
 
-  @action setInitialFocus(element) {
-    element.focus();
-  }
-
   get todos() {
     switch (this.args.filter) {
       case 'active':

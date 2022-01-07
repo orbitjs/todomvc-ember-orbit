@@ -46,8 +46,4 @@ export default class extends Component {
   @action async removeTodo() {
     await this.store.removeRecord(this.args.todo);
   }
-
-  @action setEditFocus(element) {
-    element.focus();
-  }
 }
