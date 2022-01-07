@@ -11,6 +11,6 @@ module('Acceptance | home', function (hooks) {
 
     await waitForSource('store');
 
-    assert.equal(currentURL(), '/');
+    assert.strictEqual(currentURL(), '/');
   });
 });

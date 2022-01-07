@@ -29,7 +29,7 @@ export default class extends Component {
     }
   }
 
-  @action handleKeydown(e) {
+  @action handleKeyup(e) {
     if (e.keyCode === 13) {
       e.target.blur();
     } else if (e.keyCode === 27) {
