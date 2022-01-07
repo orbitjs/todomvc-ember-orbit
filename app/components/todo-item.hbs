@@ -6,6 +6,6 @@
   </div>
   {{#if this.editing}}
     <input class="edit" value={{@todo.title}} autofocus {{on "blur" this.doneEditing}}
-      {{on "keydown" this.handleKeydown}} {{autofocus}}>
+      {{on "keyup" this.handleKeyup}} {{autofocus}}>
   {{/if}}
 </li>

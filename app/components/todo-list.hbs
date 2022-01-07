@@ -1,6 +1,6 @@
 <header class="header">
   <input class="new-todo" placeholder="What needs to be done?" {{autofocus}}
-    {{on "keydown" this.createTodo}}>
+    {{on "keyup" this.createTodo}}>
 </header>
 <section class="main">
   {{#if this.todos.length}}
